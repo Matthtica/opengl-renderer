@@ -65,7 +65,7 @@ auto CreateGuitor(GL::Shader& shader) {
     } result;
     result.object.shader = &shader;
 
-    result.object.loadModel("../src/resources/backpack/backpack.obj");
+    result.object.loadModel("../resources/backpack/backpack.obj");
     glm::mat4 model = glm::mat4(1.0f);
     shader.use();
     shader.setMat4("model", model);

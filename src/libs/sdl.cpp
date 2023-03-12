@@ -16,9 +16,6 @@ namespace utils {
 }
 
 namespace SDL {
-    void Mouse::refresh() {
-		SDL_GetMouseState(&x, &y);
-    }
 
     void flip(SDL_Surface* surface) {
         SDL_LockSurface(surface);

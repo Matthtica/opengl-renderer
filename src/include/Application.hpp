@@ -9,11 +9,9 @@
 class Application {
     SDL_Window* window;
     SDL_GLContext context;
-    Event e;
-    SDL_Event event;
+    Event& e;
 
     GL::Camera camera;
-    SDL::Mouse mouse;
 
     int WIDTH, HEIGHT;
     uint64_t tick;

@@ -4,11 +4,6 @@
 #include <string>
 
 namespace SDL {
-	struct Mouse {
-		int x, y;
-		void refresh();
-	};
-
     void flip(SDL_Surface* surface);
 
     std::pair<SDL_Window*, SDL_GLContext> initNload(int width, int height);

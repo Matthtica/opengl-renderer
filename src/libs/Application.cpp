@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Application::Application(const char* name, int width, int height) {
+Application::Application(const char* name, int width, int height): e(Event::get()) {
     WIDTH = width;
     HEIGHT = height;
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
