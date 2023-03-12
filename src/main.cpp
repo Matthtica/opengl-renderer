@@ -7,16 +7,8 @@ using namespace std;
 
 static int WIDTH = 1280;
 static int HEIGHT = 720;
-// TODO: Learn multithreading
-// TODO: Event system
-// also for keyboard and mouse input
-// and ImGui input
-// TODO: Need well structured more powerful shader system, like shader caching
 
 int main() {
-    std::ios_base::sync_with_stdio(false);
-    std::cout.tie(nullptr);
-    std::cin.tie(nullptr);
     Application& application = Application::get("Application", WIDTH, HEIGHT);
 
     GL::Shader shader("../src/Shaders/real/vertex.glsl", "../src/Shaders/real/fragment.glsl");

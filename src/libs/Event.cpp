@@ -34,7 +34,7 @@ Keyboard& Keyboard::get() {
     return keyboard;
 }
 
-void Keyboard::addAction(uint32_t keycode, std::function<void ()> fn) {
+void Keyboard::addAction(uint32_t keycode, std::function<void()> fn) {
     keymap[keycode] = fn;
 }
 
@@ -42,7 +42,7 @@ void Keyboard::handle(SDL_Event &event) {
     if (event.type == SDL_KEYDOWN) {
         uint32_t code = event.key.keysym.scancode;
         if (keymap[code] != nullptr) keymap[code]();
-        else printf("keycode: %d", code);
+        else printf("keycode: %d\n", code);
     }
 }
 
@@ -57,12 +57,12 @@ void Event::doEvent(bool& done, const float deltatime) {
     mouse.refresh();
     while(SDL_PollEvent(&event)) {
         ImGui_ImplSDL2_ProcessEvent(&event);
-        if (event.type == SDL_QUIT)
-            done = true;
+        if (event.type == SDL_QUIT) done = true;
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE)
             done = true;
         mouse.handle(event);
         keyboard.handle(event);
     }
     if (mouse.left) printf("left\n");
+    if (mouse.right) printf("right\n");
 }
