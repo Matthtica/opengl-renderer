@@ -25,16 +25,16 @@ Application::Application(const char* name, int width, int height): e(Event::get(
 
     imgui_renderer.instantiate(window, context);
 
-    e.addAction(SDL_SCANCODE_W, [this](){
+    e.keyboard.addAction(SDL_SCANCODE_W, [this](){
         camera.ProcessKeyboard(GL::CameraMovement::FORWARD, deltatime);
     });
-    e.addAction(SDL_SCANCODE_S, [this](){
+    e.keyboard.addAction(SDL_SCANCODE_S, [this](){
         camera.ProcessKeyboard(GL::CameraMovement::BACKWARD, deltatime);
     });
-    e.addAction(SDL_SCANCODE_A, [this](){
+    e.keyboard.addAction(SDL_SCANCODE_A, [this](){
         camera.ProcessKeyboard(GL::CameraMovement::LEFT, deltatime);
     });
-    e.addAction(SDL_SCANCODE_D, [this](){
+    e.keyboard.addAction(SDL_SCANCODE_D, [this](){
         camera.ProcessKeyboard(GL::CameraMovement::RIGHT, deltatime);
     });
 

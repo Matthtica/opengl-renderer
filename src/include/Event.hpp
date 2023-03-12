@@ -2,6 +2,7 @@
 #include <SDL2/SDL_events.h>
 #include <functional>
 
+// TODO: remove git repo from imgui becoz some file have been modified
 class Mouse {
     Mouse() {};
 public:
@@ -20,23 +21,25 @@ public:
 
 class Keyboard {
     std::function<void()> keymap[SDL_NUM_SCANCODES];
+    Keyboard() {};
 public:
+    static Keyboard& get();
+
+    void addAction(uint32_t keycode, std::function<void()> fn);
+
+    void handle(SDL_Event& event);
 };
 
 class Event {
     SDL_Event event;
     Mouse& mouse;
-    std::function<void()> keymap[SDL_NUM_SCANCODES];
+    Keyboard& keyboard;
 
     Event();
 public:
-
-    static Event& get() {
-        static Event e;
-        return e;
-    }
+    static Event& get();
 
     void doEvent(bool& done, const float deltatime) ;
 
-    void addAction(uint32_t keycode, std::function<void()> fn);
+    friend class Application;
 };
