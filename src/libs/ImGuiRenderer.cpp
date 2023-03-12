@@ -74,9 +74,6 @@ void ImGuiRenderer::global_setting() {
 void ImGuiRenderer::render(std::vector<Drawable*>& drawables) {
     begin();
 
-    static bool status = true;
-    ImGui::ShowDemoWindow(&status);
-
     for (const Drawable* node : drawables) node->drawImgui();
 
     end();

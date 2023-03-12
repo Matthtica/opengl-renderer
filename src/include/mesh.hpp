@@ -72,7 +72,6 @@ public:
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
-        printf("setup vertices: %d\tsetup indices: %d\n", vertices_size, indices_size);
     }
 
     ~Mesh();

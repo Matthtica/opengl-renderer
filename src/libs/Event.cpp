@@ -13,18 +13,15 @@ void Mouse::handle(SDL_Event& event) {
             if (event.button.button == SDL_BUTTON_LEFT) left = true;
             if (event.button.button == SDL_BUTTON_RIGHT) right = true;
             if (event.button.button == SDL_BUTTON_MIDDLE) middle = true;
-            printf("mouse button down: %d\n", event.button.button);
             break;
         case SDL_MOUSEBUTTONUP:
             if (event.button.button == SDL_BUTTON_LEFT) left = false;
             if (event.button.button == SDL_BUTTON_RIGHT) right = false;
             if (event.button.button == SDL_BUTTON_MIDDLE) middle = false;
-            printf("mouse button up: %d\n", event.button.button);
             break;
         case SDL_MOUSEMOTION:
             x = event.motion.x;
             y = event.motion.y;
-            printf("mouse moved: %d %d\n", x, y);
             break;
     }
 }
@@ -42,7 +39,6 @@ void Keyboard::handle(SDL_Event &event) {
     if (event.type == SDL_KEYDOWN) {
         uint32_t code = event.key.keysym.scancode;
         if (keymap[code] != nullptr) keymap[code]();
-        else printf("keycode: %d\n", code);
     }
 }
 
@@ -63,6 +59,4 @@ void Event::doEvent(bool& done, const float deltatime) {
         mouse.handle(event);
         keyboard.handle(event);
     }
-    if (mouse.left) printf("left\n");
-    if (mouse.right) printf("right\n");
 }

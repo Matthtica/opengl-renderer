@@ -14,6 +14,7 @@
 // TODO: Renderer will traverse the scene graph and call draw
 // TODO: Require scene graph and different type of scene node.
 // TODO: Material class
+// TODO: Need a class to draw only imgui without 3d object to work flexibly
 class Drawable {
 protected:
     std::function<void(const GL::Shader&)> update_uniform;

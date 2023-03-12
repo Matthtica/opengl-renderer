@@ -61,18 +61,21 @@ auto CreatePlane(GL::Shader& shader) {
 auto CreateGuitor(GL::Shader& shader) {
     struct Result {
         ModelObject object;
-        glm::vec3 trans = {0.0, 0.0, 0.0};
+        float scale = 1.0;
     } result;
     result.object.shader = &shader;
+    result.object.loadModel("../assets/backpack/backpack.obj");
 
-    result.object.loadModel("../resources/backpack/backpack.obj");
-    glm::mat4 model = glm::mat4(1.0f);
-    shader.use();
-    shader.setMat4("model", model);
+    result.object.setupUniformUpdator([&result](const GL::Shader& shader){
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(result.scale));
+        shader.setMat4("model", model);
+    });
+
     result.object.setupImgui([&result]() {
         ImGui::Begin("Guitor");
         ImGui::NewLine();
-        ImGui::ColorEdit3("color", (float*)&result.trans);
+        ImGui::SliderFloat("scale", &result.scale, 0.0f, 2.0f);
         ImGui::End();
     });
     return result;
