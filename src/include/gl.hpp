@@ -146,4 +146,46 @@ struct vertex {
     glm::vec3 position;
 };
 
+using Indices = std::vector<uint32_t>;
+
+template<typename VertexType>
+using Vertices = std::vector<VertexType>;
+
+class Index {
+    std::vector<uint32_t> cont;
+public:
+    constexpr Index() {}
+
+    constexpr Index(const std::initializer_list<uint32_t>& li) {
+        cont.insert(cont.end(), li.begin(), li.end());
+    }
+
+    constexpr Index(const std::vector<uint32_t>& in): cont(in) {}
+
+    constexpr Index(const Index& a, const Index& b) {
+        cont.reserve(a.cont.size() + b.cont.size());
+        cont.insert(cont.end(), a.cont.begin(), a.cont.end());
+        cont.insert(cont.end(), b.cont.begin(), b.cont.end());
+    }
+
+    constexpr Index operator+(const Index& rhs) {
+        Index res(*this, rhs);
+        return res;
+    }
+
+    operator std::vector<uint32_t>() {
+        return cont;
+    }
+};
+
+constexpr Index plane_index(uint32_t a, uint32_t b, uint32_t c, uint32_t d) {
+    return {a, c, b, c, d, b};
+}
+
+constexpr Index cube_index() {
+    return plane_index(0, 1, 2, 3) + plane_index(5, 4, 7, 6) +
+        plane_index(1, 5, 3, 7) + plane_index(4, 0, 6, 2) +
+        plane_index(4, 5, 0, 1) + plane_index(2, 3, 6, 7);
+}
+
 }

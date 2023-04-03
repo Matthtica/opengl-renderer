@@ -12,11 +12,6 @@
 
 #define MAX_BONE_INFLUENCE 4
 
-template<typename T>
-concept StructuredVertexType = requires {
-    { T::get_structure() } -> std::convertible_to<std::vector<uint8_t>>;
-};
-
 class Mesh {
 private:
     uint32_t VBO, EBO, VAO;
@@ -27,10 +22,10 @@ public:
 
     Mesh() {}
 
-    template<typename VertexType> requires StructuredVertexType<VertexType>
-    Mesh(std::vector<VertexType> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures) {
+    template<typename VertexType>
+    Mesh(const std::vector<VertexType> vertices, const std::vector<uint32_t> indices, const std::vector<uint32_t>& structure, std::vector<Texture> textures) {
         this->textures = textures;
-        setup(vertices, indices);
+        setup(vertices, indices, structure);
     }
 
     friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
@@ -47,26 +42,26 @@ public:
 
     void drawPoints(GL::Shader& shader);
 
-    template<typename VertexType> requires StructuredVertexType<VertexType>
-    void setupVertices(std::vector<VertexType>& vertices) {
+    template<typename VertexType>
+    void setupVertices(const std::vector<VertexType>& vertices, const std::vector<uint32_t>& structure) {
         VAO = GL::create_vao();
         vertices_size = vertices.size();
-        std::vector<uint8_t> structure = VertexType::get_structure();
         glGenBuffers(1, &VBO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, vertices_size * sizeof(VertexType), &vertices[0], GL_STATIC_DRAW);
 
-        for (int i = 0, prev = 0; i < structure.size(); ++i) {
+        uint64_t prev = 0;
+        for (uint32_t i = 0; i < structure.size(); ++i) {
             glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i, structure[i], GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)(prev * sizeof(float)));
+            glVertexAttribPointer(i, structure[i] / sizeof(float), GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)prev);
             prev += structure[i];
         }
     }
 
-    template<typename VertexType> requires StructuredVertexType<VertexType>
-    void setup(std::vector<VertexType>& vertices, std::vector<uint32_t>& indices) {
-        setupVertices(vertices);
+    template<typename VertexType>
+    void setup(const gl::Vertices<VertexType>& vertices, const gl::Indices& indices, const gl::Indices& structure) {
+        setupVertices(vertices, structure);
         indices_size = indices.size();
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

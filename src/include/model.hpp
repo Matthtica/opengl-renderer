@@ -16,9 +16,6 @@ private:
         glm::vec3 Tangent;
         glm::vec3 Bitangent;
 
-        static constexpr std::vector<uint8_t> get_structure() {
-            return {3, 3, 2, 3, 3};
-        }
     };
     std::vector<Texture> loaded_textures;
     std::vector<Mesh> meshes;

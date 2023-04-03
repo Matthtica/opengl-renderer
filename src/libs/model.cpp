@@ -1,7 +1,9 @@
+#include "traits.hpp"
 #include <model.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <iostream>
+#include <fgl.hpp>
 
 Model::Model(std::string path, bool gamma): gammaCorrection(gamma) {
     loadModel(path);
@@ -50,6 +52,8 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 }
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
+    using namespace glm;
+    using namespace fgl::traits;
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     std::vector<Texture> textures;
@@ -86,7 +90,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-    return Mesh(vertices, indices, textures);
+
+    return Mesh(vertices, indices, layout_of<vec3, vec3, vec2, vec3, vec3>(), textures);
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {

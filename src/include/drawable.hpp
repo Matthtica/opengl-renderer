@@ -51,6 +51,11 @@ public:
 
     MeshNode& operator=(MeshNode&& other) noexcept;
 
+    template<typename VertexType>
+    void setup(const std::vector<VertexType>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure) {
+        mesh.setup(vertices, indices, structure);
+    }
+
     void draw() const override;
 
     friend void swap(MeshNode&, MeshNode&) noexcept;
