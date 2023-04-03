@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <concepts>
 #include <type_traits>
+#include <gl.hpp>
 
 namespace glstd {
 using namespace glm;
@@ -20,6 +21,11 @@ template<typename VertexType>
 std::vector<float> flatten(const std::vector<VertexType>& vertex) {
     size_t m = sizeof(VertexType) * vertex.size() / sizeof(float);
     return std::vector<float>((float*)vertex.data(), (float*)vertex.data() + m);
+}
+
+template<typename T>
+gl::verd<T> merge(const gl::verd<T>& a, const gl::verd<T>& b) {
+    return a | b;
 }
 
 }

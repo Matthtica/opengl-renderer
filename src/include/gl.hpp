@@ -188,4 +188,86 @@ constexpr Index cube_index() {
         plane_index(4, 5, 0, 1) + plane_index(2, 3, 6, 7);
 }
 
+template<typename T>
+class verd {
+    T* cont;
+    size_t size;
+public:
+    constexpr verd(): cont(nullptr), size(0) {}
+
+    verd(const std::initializer_list<T>& in) {
+        size = in.size();
+        cont = new T(size);
+        auto it = in.begin();
+        for (size_t i = 0; i < size; ++i, ++it)
+            cont[i] = *it;
+    }
+
+    template<size_t n>
+    constexpr verd(const glm::vec<n, T, glm::defaultp>& in) {
+        size = n;
+        cont = new T(size);
+        memcpy(cont, in, size * sizeof(T));
+    }
+
+    constexpr verd(const verd& another) {
+        cont = new T(another.size);
+        size = another.size;
+        memcpy(cont, another.cont, size * sizeof(T));
+    }
+
+    constexpr verd(verd&& another) noexcept {
+        cont = another.cont;
+        size = another.size;
+        another.cont = nullptr;
+        another.size = 0;
+    }
+
+    constexpr verd& operator=(const verd& another) {
+        if (size != another.size) {
+            delete [] cont;
+            size = another.size;
+            cont = new T(size);
+        }
+        memcpy(cont, another.cont, size * sizeof(T));
+        return *this;
+    }
+
+    constexpr verd& operator=(verd&& another) noexcept {
+        verd<T> tmp(std::move(another));
+        swap(*this, tmp);
+        return *this;
+    }
+
+    constexpr verd operator+(const verd& another) {
+        verd res;
+        size_t n = size + another.size;
+        res.cont = new T(n);
+        memcpy(res.cont, cont, size * sizeof(T));
+        memcpy(res.cont + size, another.cont, another.size * sizeof(T));
+        return res;
+    }
+
+    constexpr std::vector<T> data() const {
+        return std::vector<T>(cont, cont + size);
+    }
+
+    template<typename U>
+    constexpr friend void swap(verd<U>& a, verd<U>& b) noexcept;
+
+    constexpr ~verd() {
+        delete [] cont;
+        cont = nullptr;
+        size = 0;
+    }
+};
+
+template<typename U>
+constexpr void swap(verd<U>& a, verd<U>& b) noexcept {
+    std::swap(a.cont, b.cont);
+    std::swap(a.size, b.size);
+}
+
+using v = verd<float>;
+
 }
