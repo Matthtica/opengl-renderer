@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include <iostream>
 #include <fgl.hpp>
+#include <glstd.hpp>
 
 Model::Model(std::string path, bool gamma): gammaCorrection(gamma) {
     loadModel(path);
@@ -90,8 +91,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-
-    return Mesh(vertices, indices, layout_of<vec3, vec3, vec2, vec3, vec3>(), textures);
+    return Mesh(glstd::flatten(vertices), indices, layout_of<vec3, vec3, vec2, vec3, vec3>(), textures);
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {

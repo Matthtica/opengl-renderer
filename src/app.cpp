@@ -14,6 +14,7 @@
 // TODO: create utility library to easily create procedural mesh with sexy code.
 auto CreatePlane(GL::Shader& shader) {
     using namespace glm;
+    using namespace glstd;
     using namespace fgl::traits;
 
     struct ResultObject {
@@ -22,6 +23,7 @@ auto CreatePlane(GL::Shader& shader) {
         float scaler = 1.0f;
     } result;
     result.node.shader = &shader;
+
     struct Vertex {
         vec3 position;
         vec2 tex;
@@ -44,11 +46,11 @@ auto CreatePlane(GL::Shader& shader) {
     int location = 0;
     uint32_t len = indices.size();
 
-    result.node.setup(vertices, indices, layout_of<vec3, vec2>());
+    result.node.setup(flatten(vertices), indices, layout_of<vec3, vec2>());
     Texture texture = GL::LoadTexture("../assets/wood-fade.jpg");
     result.node.mesh.textures = {texture};
 
-    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 1.0f, 1.0f));
+    mat4 model = scale(mat4(1.0f), vec3(2.0f, 1.0f, 1.0f));
     shader.setMat4("model", model);
 
     return result;
@@ -59,31 +61,28 @@ auto CreatePlane(GL::Shader& shader) {
 auto CreateCube(GL::Shader& shader) {
     using namespace glm;
     using namespace gl;
+    using namespace glstd;
     using namespace fgl::traits;
 
     struct Resurt {
         MeshNode node;
     } res;
 
-    struct Vertex {
-        vec3 position;
-    };
+    std::vector<vertex> vertices;
+    vertices.emplace_back(vertex{{-1.0, 1.0, 1.0}});
+    vertices.emplace_back(vertex{{1.0, 1.0, 1.0}});
+    vertices.emplace_back(vertex{{-1.0,-1.0, 1.0}});
+    vertices.emplace_back(vertex{{1.0,-1.0, 1.0}});
 
-    std::vector<Vertex> vertices;
-    vertices.emplace_back(Vertex{{-1.0, 1.0, 1.0}});
-    vertices.emplace_back(Vertex{{1.0, 1.0, 1.0}});
-    vertices.emplace_back(Vertex{{-1.0,-1.0, 1.0}});
-    vertices.emplace_back(Vertex{{1.0,-1.0, 1.0}});
-
-    vertices.emplace_back(Vertex{{-1.0, 1.0, -1.0}});
-    vertices.emplace_back(Vertex{{1.0, 1.0, -1.0}});
-    vertices.emplace_back(Vertex{{-1.0,-1.0, -1.0}});
-    vertices.emplace_back(Vertex{{1.0,-1.0, -1.0}});
+    vertices.emplace_back(vertex{{-1.0, 1.0, -1.0}});
+    vertices.emplace_back(vertex{{1.0, 1.0, -1.0}});
+    vertices.emplace_back(vertex{{-1.0,-1.0, -1.0}});
+    vertices.emplace_back(vertex{{1.0,-1.0, -1.0}});
 
     std::vector<uint32_t> indices = cube_index();
 
     res.node.shader = &shader;
-    res.node.setup(vertices, indices, layout_of<vec3>());
+    res.node.setup(flatten(vertices), indices, layout_of<vec3>());
     shader.use();
     shader.setMat4("model", glm::mat4(1.0f));
     return res;

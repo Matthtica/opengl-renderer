@@ -16,10 +16,10 @@ int main() {
     GL::Shader simpleShader("../src/Shaders/simple/vertex.vert", "../src/Shaders/simple/fragment.frag");
 
     //auto plane = CreatePlane(simpleShader);
-    //auto cube = CreateCube(simpleShader);
+    auto cube = CreateCube(simpleShader);
 
     //renderer << plane.node;
-    //renderer << cube.node;
+    renderer << cube.node;
     auto guitor = CreateGuitor(shader, app.camera);
     app.renderer << guitor.node;
     app.run();

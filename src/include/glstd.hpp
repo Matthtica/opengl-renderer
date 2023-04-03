@@ -1,6 +1,10 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
+#include <ranges>
+#include <algorithm>
+#include <concepts>
+#include <type_traits>
 
 namespace glstd {
 using namespace glm;
@@ -12,19 +16,10 @@ constexpr vec3 BACK  = -FRONT;
 constexpr vec3 RIGHT = vec3(1.0, 0.0, 0.0);
 constexpr vec3 LEFT  = -RIGHT;
 
-constexpr vec3 cube_vertices[8] = {
-    UP + LEFT + FRONT, UP + RIGHT + FRONT, // 0, 1
-    DOWN + LEFT + FRONT, DOWN + RIGHT + FRONT, // 2, 3
-    UP + LEFT + BACK, UP + RIGHT + BACK, // 4, 5
-    DOWN + LEFT + BACK, UP + RIGHT + BACK // 6, 7
-};
+template<typename VertexType>
+std::vector<float> flatten(const std::vector<VertexType>& vertex) {
+    size_t m = sizeof(VertexType) * vertex.size() / sizeof(float);
+    return std::vector<float>((float*)vertex.data(), (float*)vertex.data() + m);
+}
 
-const std::vector<uint32_t> cube_indices = {
-    6, 5, 4,
-};
-
-constexpr vec3 plane_vertices[4] = {
-    UP + LEFT, UP + RIGHT,
-    DOWN + LEFT, DOWN + RIGHT
-};
 }

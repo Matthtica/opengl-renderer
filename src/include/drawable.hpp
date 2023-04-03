@@ -17,9 +17,6 @@
 // TODO: Need a class to draw only imgui without 3d object to work flexibly
 class Node {
 protected:
-    std::function<void(const GL::Shader&)> update_uniform;
-    std::function<void()> draw_imgui;
-    std::function<void()> updator;
 public:
     GL::Shader* shader;
 
@@ -51,10 +48,7 @@ public:
 
     MeshNode& operator=(MeshNode&& other) noexcept;
 
-    template<typename VertexType>
-    void setup(const std::vector<VertexType>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure) {
-        mesh.setup(vertices, indices, structure);
-    }
+    void setup(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure);
 
     void draw() const override;
 

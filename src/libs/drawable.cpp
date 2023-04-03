@@ -35,6 +35,10 @@ MeshNode& MeshNode::operator=(MeshNode&& other) noexcept {
     return *this;
 }
 
+void MeshNode::setup(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure) {
+    mesh.setup(vertices, indices, structure);
+}
+
 void MeshNode::draw() const {
     shader->use();
     mesh.draw(*shader);

@@ -1,11 +1,18 @@
 #include <mesh.hpp>
+#include <glstd.hpp>
+#include <numeric>
+
+Mesh::Mesh(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure, const std::vector<Texture>& textures) {
+    this->textures = textures;
+    setup(vertices, indices, structure);
+}
 
 Mesh::Mesh(Mesh&& rhs) noexcept {
     VBO = std::exchange(rhs.VBO, 0);
     VAO = std::exchange(rhs.VAO, 0);
     EBO = std::exchange(rhs.EBO, 0);
-    vertices_size = std::exchange(rhs.vertices_size, 0);
-    indices_size = std::exchange(rhs.indices_size, 0);
+    num_vertex = std::exchange(rhs.num_vertex, 0);
+    num_index = std::exchange(rhs.num_index, 0);
     textures = std::move(rhs.textures);
 }
 
@@ -39,7 +46,7 @@ void Mesh::draw(GL::Shader& shader) const {
     // draw mesh
     glBindVertexArray(VAO);
     // WARN: async drawing is not working
-    glDrawElements(GL_TRIANGLES, indices_size, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, num_index, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     // always good practice to set everything back to defaults once configured.
     glActiveTexture(GL_TEXTURE0);
@@ -48,18 +55,44 @@ void Mesh::draw(GL::Shader& shader) const {
 void Mesh::drawPoints(GL::Shader& shader) {
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawArrays(GL_POINTS, 0, vertices_size);
+    glDrawArrays(GL_POINTS, 0, num_vertex);
     glBindVertexArray(0);
     // always good practice to set everything back to defaults once configured.
     glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::setupVertices(const std::vector<float>& vertices, const std::vector<uint32_t>& structure) {
+    VAO = GL::create_vao();
+    glGenBuffers(1, &VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    size_t vertex_size = std::accumulate(structure.begin(), structure.end(), 0);
+
+    num_vertex = vertices.size() * sizeof(float) / vertex_size;
+    uint64_t prev = 0;
+    for (uint32_t i = 0; i < structure.size(); ++i) {
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(i, structure[i] / sizeof(float), GL_FLOAT, GL_FALSE, vertex_size, (void*)prev);
+        prev += structure[i];
+    }
+}
+
+void Mesh::setup(const std::vector<float>& vertices, const gl::Indices& indices, const std::vector<uint32_t>& structure) {
+    setupVertices(vertices, structure);
+    num_index = indices.size();
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, num_index * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
 }
 
 void swap(Mesh& lhs, Mesh& rhs) noexcept {
     std::swap(lhs.VBO, rhs.VBO);
     std::swap(lhs.EBO, rhs.EBO);
     std::swap(lhs.VAO, rhs.VAO);
-    std::swap(lhs.vertices_size, rhs.vertices_size);
-    std::swap(lhs.indices_size, rhs.indices_size);
+    std::swap(lhs.num_vertex, rhs.num_vertex);
+    std::swap(lhs.num_index, rhs.num_index);
     std::swap(lhs.textures, rhs.textures);
 }
 
