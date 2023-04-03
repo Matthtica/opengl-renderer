@@ -67,7 +67,6 @@ public:
     template<typename VertexType> requires StructuredVertexType<VertexType>
     void setup(std::vector<VertexType>& vertices, std::vector<uint32_t>& indices) {
         setupVertices(vertices);
-
         indices_size = indices.size();
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

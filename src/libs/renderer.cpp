@@ -1,9 +1,9 @@
 #include <renderer.hpp>
 
-void Renderer::add(Drawable& object) {
+void Renderer::operator<<(Node& object) {
     objects.emplace_back(&object);
 }
 
 void Renderer::draw() const {
-    for(const Drawable* object : objects) object->draw();
+    for(const Node* object : objects) object->draw();
 }

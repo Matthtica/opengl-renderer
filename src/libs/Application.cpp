@@ -49,8 +49,8 @@ Application& Application::get(const char* name, int width, int height) {
 
 void Application::run() {
     while (!done) {
-        // TODO: extract into separate event system
         e.doEvent(done, deltatime);
+        float len = glm::length(camera.position);
         update_preset();
         update_uniform_buffer();
 
@@ -64,14 +64,17 @@ void Application::run() {
     }
 }
 
+using u32 = uint32_t;
+
 void Application::setup_uniform_buffer() {
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    using namespace glm;
+    mat4 projection = perspective(radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     //glm::mat4 projection = glm::ortho(-(WIDTH / 2.0f), WIDTH / 2.0f, HEIGHT / 2.0f, -(HEIGHT / 2.0f), -1.0f, 1.0f);
     glGenBuffers(1, &ubo); // WARN: Memory leak.
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 2 * sizeof(glm::mat4));
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &projection);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(mat4), NULL, GL_STATIC_DRAW);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 2 * sizeof(mat4));
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), &projection);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

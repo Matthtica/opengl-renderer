@@ -11,14 +11,11 @@ class Application {
     SDL_GLContext context;
     Event& e;
 
-    GL::Camera camera;
-
     int WIDTH, HEIGHT;
     uint64_t tick;
     float deltatime = 0.0f;
 
     // TODO: Seperate things related to render in AbstractWorld class
-    // TODO: Require seperate event system
     uint32_t ubo;
 
     void setup_uniform_buffer();
@@ -33,6 +30,7 @@ class Application {
 
     Application() = delete;
 public:
+    GL::Camera camera;
     std::mutex data_mut;
 
     bool done = false;

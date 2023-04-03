@@ -26,7 +26,7 @@ public:
 
     void onupdate();
 
-    void render(std::vector<Drawable*>& drawables);
+    void render(std::vector<Node*>& drawables);
 
     friend class Application;
 

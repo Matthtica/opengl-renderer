@@ -139,3 +139,11 @@ namespace GL {
 
     void bind_vao(const uint32_t& vao);
 }
+
+namespace gl {
+
+struct vertex {
+    glm::vec3 position;
+};
+
+}

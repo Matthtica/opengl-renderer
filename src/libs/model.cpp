@@ -9,12 +9,14 @@ Model::Model(std::string path, bool gamma): gammaCorrection(gamma) {
 
 Model::Model(Model&& other) noexcept:
    loaded_textures(std::move(other.loaded_textures)),
-   meshes(std::move(other.meshes))
+   meshes(std::move(other.meshes)),
+   directory(std::move(other.directory)),
+   gammaCorrection(std::move(other.gammaCorrection))
 {}
 
 Model& Model::operator=(Model&& other) noexcept {
-    loaded_textures = std::move(other.loaded_textures);
-    meshes = std::move(other.meshes);
+    Model tmp(std::move(other));
+    swap(*this, tmp);
     return *this;
 }
 
@@ -116,4 +118,11 @@ void Model::draw(GL::Shader& shader) const {
     for (uint32_t i = 0; i < meshes.size(); ++i) {
         meshes[i].draw(shader);
     }
+}
+
+void swap(Model& a, Model& b) noexcept {
+    std::swap(a.loaded_textures, b.loaded_textures);
+    std::swap(a.meshes, b.meshes);
+    std::swap(a.directory, b.directory);
+    std::swap(a.gammaCorrection, b.gammaCorrection);
 }

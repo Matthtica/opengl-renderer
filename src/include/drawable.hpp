@@ -15,7 +15,7 @@
 // TODO: Require scene graph and different type of scene node.
 // TODO: Material class
 // TODO: Need a class to draw only imgui without 3d object to work flexibly
-class Drawable {
+class Node {
 protected:
     std::function<void(const GL::Shader&)> update_uniform;
     std::function<void()> draw_imgui;
@@ -23,91 +23,57 @@ protected:
 public:
     GL::Shader* shader;
 
-    Drawable() {};
+    Node() {};
 
-    Drawable(const Drawable&);
+    Node(const Node&);
 
-    Drawable(Drawable&&) noexcept;
+    Node(Node&&) noexcept;
 
-    Drawable& operator=(const Drawable&);
+    Node& operator=(const Node&);
 
-    Drawable& operator=(Drawable&&) noexcept;
-
-    void setupUniformUpdator(std::function<void(const GL::Shader&)> fn);
-
-    void setupImgui(std::function<void()> fn);
-
-    void setupUpdator(std::function<void()> fn);
+    Node& operator=(Node&&) noexcept;
 
     virtual void draw() const = 0;
 
-    void drawImgui() const;
-
-    void update();
-
-    friend void swap(Drawable&, Drawable&) noexcept;
+    friend void swap(Node&, Node&) noexcept;
 };
 
-class Object : public Drawable {
-    std::function<void()> drawer;
-public:
-    uint32_t vao;
-    std::vector<uint32_t> vbos;
-    uint32_t ebo;
-
-    Object() {};
-
-    Object(const Object& other) = delete;
-
-    Object(Object&& other) noexcept;
-
-    Object& operator=(const Object& other) = delete;
-
-    Object& operator=(Object&& other) noexcept;
-
-    void setupDrawer(std::function<void()> fn);
-
-    void draw() const override;
-
-    friend void swap(Object&, Object&) noexcept;
-
-    ~Object();
-};
-
-class MeshObject : public Drawable {
+class MeshNode : public Node {
 public:
     Mesh mesh;
-    MeshObject() {}
+    MeshNode() {}
 
-    MeshObject(const MeshObject&) = delete;
+    MeshNode(const MeshNode&) = delete;
 
-    MeshObject(MeshObject&& other) noexcept;
+    MeshNode(MeshNode&& other) noexcept;
 
-    MeshObject& operator=(const MeshObject&) = delete;
+    MeshNode& operator=(const MeshNode&) = delete;
 
-    MeshObject& operator=(MeshObject&& other) noexcept;
+    MeshNode& operator=(MeshNode&& other) noexcept;
 
     void draw() const override;
 
-    friend void swap(MeshObject&, MeshObject&) noexcept;
+    friend void swap(MeshNode&, MeshNode&) noexcept;
 };
 
-class ModelObject : public Drawable {
+class ModelNode : public Node {
 public:
     Model model;
-    ModelObject() {}
+    ModelNode() {}
 
-    ModelObject(std::string path): model(path) {};
+    ModelNode(std::string path): model(path) {};
 
-    ModelObject(const ModelObject&) = delete;
+    ModelNode(const ModelNode&) = delete;
 
-    ModelObject(ModelObject&& other) noexcept;
+    ModelNode(ModelNode&& other) noexcept;
 
-    ModelObject& operator=(const ModelObject&) = delete;
+    ModelNode& operator=(const ModelNode&) = delete;
 
-    ModelObject& operator=(ModelObject&& other) noexcept;
+    ModelNode& operator=(ModelNode&& other) noexcept;
 
     void draw() const override;
 
     void loadModel(std::string path);
+
+    friend void swap(ModelNode& a, ModelNode& b) noexcept;
 };

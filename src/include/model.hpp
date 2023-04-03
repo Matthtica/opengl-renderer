@@ -23,7 +23,6 @@ private:
     std::vector<Texture> loaded_textures;
     std::vector<Mesh> meshes;
 
-
     void processNode(aiNode* node, const aiScene* scene);
 
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
@@ -48,4 +47,6 @@ public:
     void loadModel(std::string path);
 
     void draw(GL::Shader& shader) const;
+
+    friend void swap(Model& a, Model& b) noexcept;
 };

@@ -1,10 +1,33 @@
-#include <ImGuiRenderer.hpp>
-#include <SDL_timer.h>
+#include <fgl.hpp>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
-#include <filesystem>
 
-void ImGuiRenderer::instantiate(SDL_Window* window, SDL_GLContext& context) {
+namespace fgl {
+SDL_Window* window = nullptr;
+SDL_GLContext context;
+
+void init_sdl2_with_gl(const char* name,int width, int height) {
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+    //SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    if (!window) {
+        printf("Window already created. \n Multiple invocations of init function\n");
+        return;
+    }
+    window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+    context = SDL_GL_CreateContext(window);
+
+    // Vsync 0: off, 1: on
+    SDL_GL_SetSwapInterval(1);
+    gladLoadGLLoader(SDL_GL_GetProcAddress);
+}
+
+void init_imgui_with_gl() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -39,45 +62,16 @@ void ImGuiRenderer::instantiate(SDL_Window* window, SDL_GLContext& context) {
     ImGui_ImplOpenGL3_Init("#version 450");
 }
 
-void ImGuiRenderer::begin() const {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
+void destroy_sdl2_with_gl() {
+    SDL_GL_DeleteContext(context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
-void ImGuiRenderer::end() const {
-    ImGuiIO& io = ImGui::GetIO();
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    // TODO: Make Application singleton.
-    /*
-    Application& app = Application::Get();
-    io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        //SDL_GLContext context;
-        //SDL_Window* win = SDL_GL_GetCurrentWindow();
-        //SDL_GL_MakeCurrent(win, currentContext);
-    }*/
-}
-
-void ImGuiRenderer::global_setting() {
-    uint64_t currentTick = SDL_GetTicks64();
-    delta_time = currentTick - tick;
-    tick = currentTick;
-    ImGui::Begin("App");
-    ImGui::Text("Application frame time: %.00f\t fps: %.00f", delta_time, 1000.0f / delta_time);
-    ImGui::End();
-}
-
-void ImGuiRenderer::render(std::vector<Node*>& drawables) {
-    //begin();
-    //end();
-}
-
-ImGuiRenderer::~ImGuiRenderer() {
+void destroy_imgui() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+}
+
 }
