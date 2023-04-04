@@ -7,6 +7,15 @@
 #include <type_traits>
 #include <gl.hpp>
 
+template<typename T>
+constexpr std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) {
+    std::vector<T> res;
+    res.reserve(a.size() + b.size());
+    res.insert(res.end(), a.begin(), a.end());
+    res.insert(res.end(), b.begin(), b.end());
+    return res;
+}
+
 namespace glstd {
 using namespace glm;
 
@@ -23,9 +32,15 @@ std::vector<float> flatten(const std::vector<VertexType>& vertex) {
     return std::vector<float>((float*)vertex.data(), (float*)vertex.data() + m);
 }
 
-template<typename T>
-gl::verd<T> merge(const gl::verd<T>& a, const gl::verd<T>& b) {
-    return a | b;
+constexpr std::vector<uint32_t> plane_index(uint32_t a, uint32_t b, uint32_t c, uint32_t d) {
+    return {a, c, b, c, d, b};
+}
+
+constexpr std::vector<uint32_t> cube_index() {
+    return plane_index(0, 1, 2, 3) + plane_index(5, 4, 7, 6) +
+        plane_index(1, 5, 3, 7) + plane_index(4, 0, 6, 2) +
+        plane_index(4, 5, 0, 1) + plane_index(2, 3, 6, 7);
 }
 
 }
+

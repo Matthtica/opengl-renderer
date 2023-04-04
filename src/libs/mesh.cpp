@@ -79,7 +79,7 @@ void Mesh::setupVertices(const std::vector<float>& vertices, const std::vector<u
     }
 }
 
-void Mesh::setup(const std::vector<float>& vertices, const gl::Indices& indices, const std::vector<uint32_t>& structure) {
+void Mesh::setup(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, const std::vector<uint32_t>& structure) {
     setupVertices(vertices, structure);
     num_index = indices.size();
     glGenBuffers(1, &EBO);

@@ -19,7 +19,7 @@ int main() {
     auto cube = CreateCube(simpleShader);
 
     //renderer << plane.node;
-    renderer << cube.node;
+    //renderer << cube.node;
     auto guitor = CreateGuitor(shader, app.camera);
     app.renderer << guitor.node;
     app.run();
