@@ -43,7 +43,7 @@ auto CreatePlane(GL::Shader& shader) {
     int location = 0;
     uint32_t len = indices.size();
 
-    result.node.setup(vertices, indices, layout_of<vec3, vec2>());
+    result.node.setup(vertices, indices, layout_by<float>({3, 2}));
     Texture texture = GL::LoadTexture("../assets/wood-fade.jpg");
     result.node.mesh.textures = {texture};
 
